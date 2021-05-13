@@ -1,0 +1,28 @@
+<html>
+	<header><title>Conspiracy Bot</title></header>
+	<body>
+
+			<!-- CUSTOM WEBSITE -->
+
+			<h1>Conspiracy Bot</h1>
+			<p>Example integration of Infobot.<p>
+
+			<!-- BOT INTEGRATION -->
+			<div id="webchat"/>
+			<script src="https://storage.googleapis.com/mrbot-cdn/webchat-latest.js"></script>
+			// Or you can replace latest with a specific version
+			<script>
+			  WebChat.default.init({
+			    selector: "#webchat",
+				initPayload: "/greet",
+				customData: {"language": "en"},
+				socketUrl: "http://34.87.238.171/", //socketUrl: "http://localhost:5005",
+				socketPath: "/socket.io/",
+				title: "Infobot",
+				subtitle: "News summarized for you.",
+			  })
+			</script>
+			<!-- /END BOT INTEGRATION -->
+
+	</body>
+</html>

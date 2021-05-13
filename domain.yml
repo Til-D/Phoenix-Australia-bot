@@ -1,0 +1,105 @@
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+
+slots:
+  question:
+    type: text
+    initial_value: ''
+  age:
+    type: text
+    initial_value: ''
+  gender:
+    type: text
+    initial_value: ''
+  aboriginal_people:
+    type: text
+    initial_value: ''
+  disater:
+    type: text
+    initial_value: ''
+  military:
+    type: text
+    initial_value: ''
+  emergency:
+    type: text
+    initial_value: ''
+  vehicle_accident:
+    type: text
+    initial_value: ''
+  sexual_assault:
+    type: text
+    initial_value: ''
+  terrorism:
+    type: text
+    initial_value: ''
+  victim_crime:
+    type: text
+    initial_value: ''
+  victim_violence:
+    type: text
+    initial_value: ''
+  refugees:
+    type: text
+    initial_value: ''
+  scores:
+    type: float
+    initial_value: 0.0
+  email:
+    type: text
+
+  
+  
+  
+  
+  
+  
+  
+  
+
+responses:
+  utter_greet:
+  - text: "Hey! How are you?"
+
+  utter_cheer_up:
+  - text: "Here is something to cheer you up:"
+    image: "https://i.imgur.com/nGF1K8f.jpg"
+
+  utter_did_that_help:
+  - text: "Did that help you?"
+
+  utter_happy:
+  - text: "Great, carry on!"
+
+  utter_goodbye:
+  - text: "Bye"
+
+  utter_iamabot:
+  - text: "I am a bot, powered by Rasa."
+
+  utter_ask_ptsd:
+  - text: "Hi, do you know about PTSD?"
+
+  utter_ptsd_experience:
+  - text: "So do you think you may be experiencing PTSD?"
+
+  utter_ptsd_questions:
+  - text: "I'm going to ask you only a few questions, which helps you to know yourself better."
+
+  utter_ptsd_family:
+  - text: "Do you have some family members or firends who are experiencing PTSD?"
+
+  utter_ptsd_intro:
+  - text: "PTSD is a chronic psychiatric disorder accompanying by stressful and anxiety feelings, which are caused by non-forgotten bad memories. So do you think you may be experiencing PTSD?"
+
+actions:
+  - action_ptsd_helper
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
