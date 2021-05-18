@@ -26,6 +26,8 @@ class PTSDHelperAction(Action):
         refugees = tracker.get_slot('refugees')
         scores = float(tracker.get_slot('scores'))
         email = tracker.get_slot('email')
+        further_test = tracker.get_slot('further_test')
+        feedback = tracker.get_slot('feedback')
 
         print('Current Question: ' + question)
         print('Latest_message: ')
@@ -45,12 +47,12 @@ class PTSDHelperAction(Action):
         ]
         if question == '':
             dispatcher.utter_message(
-                text="Have you known about PTSD?", buttons=buttons)
+                text="Have you heard of Post-Traumatic Stress Disorder, i.e., PTSD?", buttons=buttons)
             return [SlotSet('question', 'q_know_ptsd')]
         elif question == 'q_know_ptsd':
             if latest_message == 'affirm':
                 dispatcher.utter_message(
-                    text="So do you think you may be experiencing PTSD?", buttons=buttons)
+                    text="Do you think you may be experiencing PTSD?", buttons=buttons)
                 return [SlotSet('question', 'q_experience_ptsd')]
             elif latest_message == 'deny':
                 dispatcher.utter_message(
@@ -85,10 +87,10 @@ class PTSDHelperAction(Action):
                 dispatcher.utter_message(
                     text="There are some resources about PTSD and some treaments may help PTSD patients recover.")
                 dispatcher.utter_message(       # add recommendations
-                    text="1. PTSD guideline - Children and adolescents: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-3.-Children-and-adolescents.pdf" +
-                    "\n2. PTSD guideline - Interventions: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-4.-Interventions.pdf" +
-                    "\n3. PTSD guideline - Treatment recommendations: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-6.-Treatment-recommendations.pdf" +
-                    "\n4. PTSD guideilne - Special populations: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-1-Aboriginal-and-Torres-Strait-Islander-Peoples-1.pdf")
+                    text="[1. PTSD guideline - Children and adolescents](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-3.-Children-and-adolescents.pdf)" +
+                    "\n[2. PTSD guideline - Interventions](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-4.-Interventions.pdf)" +
+                    "\n[3. PTSD guideline - Treatment recommendations](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-6.-Treatment-recommendations.pdf)" +
+                    "\n[4. PTSD guideilne - Special populations](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-1-Aboriginal-and-Torres-Strait-Islander-Peoples-1.pdf)")
                 return []
             elif latest_message == 'deny':
                 dispatcher.utter_message(
@@ -99,18 +101,68 @@ class PTSDHelperAction(Action):
                 dispatcher.utter_message(
                     text="There are some recommendations and resources for you to treat PTSD.")
                 dispatcher.utter_message(       # give recommendation
-                    text="1. PTSD guideline - Children and adolescents: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-3.-Children-and-adolescents.pdf" +
-                    "\n2. PTSD guideline - Treatment recommendations: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-6.-Treatment-recommendations.pdf" +
-                    "\n3. PTSD guideilne - Special populations: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-1-Aboriginal-and-Torres-Strait-Islander-Peoples-1.pdf")
+                    text="[1. PTSD guideline - Children and adolescents](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-3.-Children-and-adolescents.pdf)" +
+                    "\n[2. PTSD guideline - Treatment recommendations](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-6.-Treatment-recommendations.pdf)" +
+                    "\n[3. PTSD guideilne - Special populations](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-1-Aboriginal-and-Torres-Strait-Islander-Peoples-1.pdf)")
                 return []
-            elif latest_message == 'affirm':    # record personal information
+            elif latest_message == 'affirm': 
                 dispatcher.utter_message(
                     text="Excellent! This is an anonymous test and the results will only be shown to you. So you can trust me totally. ")
+                dispatcher.utter_message(text="In the past month, ...")
                 dispatcher.utter_message(
-                    text="Now let's talk about you.")
+                    text="Had nightmares about the event(s) or thought about the event(s) when you did not want to?", buttons=buttons)      # start five-item measurement
+                return [SlotSet('question', 'q_test_1')]
+        elif question == 'q_test_1':
+            dispatcher.utter_message(
+                text="Tried hard not to think about the event(s) or went out of your way to avod situations that reminded you of the event(s)?", buttons=buttons)
+            if latest_message == 'affirm':
+                scores = scores + 1.0
+            return [SlotSet('question', 'q_test_2'), SlotSet('scores', scores)]
+        elif question == 'q_test_2':
+            dispatcher.utter_message(
+                text="Been constantly on guard, watchful or startled?", buttons=buttons)
+            if latest_message == 'affirm':
+                scores = scores + 1.0
+            return[SlotSet('question', 'q_test_3'), SlotSet('scores', scores)]
+        elif question == 'q_test_3':
+            dispatcher.utter_message(
+                text="Felt numb or detached from people, activities or your surroundings?", buttons=buttons)
+            if latest_message == 'affirm':
+                scores = scores + 1.0
+            return [SlotSet('question', 'q_test_4'), SlotSet('scores', scores)]
+        elif question == 'q_test_4':
+            dispatcher.utter_message(
+                text="Guilty or unable to stop blaming yourself or others for the event(s) or any problems the enent(s) may have caused?", buttons=buttons)
+            if latest_message == 'affirm':
+                scores = scores + 1.0
+            return [SlotSet('question', 'q_test_5'), SlotSet('scores', scores)]
+        elif question == 'q_test_5':
+            if latest_message == 'affirm':
+                scores = scores + 1.0
+            dispatcher.utter_message(
+                text="Your score is " + str(scores) + "/5.0.")
+            if scores < 3.0:
+                    dispatcher.utter_message(
+                        text="It seems that you're fine right now, although sometimes you may have bad mood.")
+                    dispatcher.utter_message(
+                        text="There are some recommendations for you to help overcome some bad emotions.")  # add recommendaitons
+                    dispatcher.utter_message(text="GIVE RECOMMENDATIONS")
+            elif scores >= 3.0:
+                dispatcher.utter_message(
+                    text="It seems that you may have PTSD.")
+                dispatcher.utter_message(
+                    text="Would you like to answer more questions that will help us to give you a moreaccurate recommendation? It may take you 3 minutes.", buttons=buttons)
+                return [SlotSet('question', 'q_further_test')]
+        elif question == 'q_further_test':
+            further_test_input = tracker.latest_message['text'] 
+            if latest_message == 'affirm':      # start special population test
                 dispatcher.utter_message(
                     text="What's your age?")
-                return[SlotSet('question', 'q_age')]
+                return [SlotSet('question', 'q_age'), SlotSet('further_test', further_test_input)]
+            elif latest_message == 'deny':
+                dispatcher.utter_message(text="There are some recommendations for you.")
+                dispatcher.utter_message(text="GIVE RECOMMENDATIONS")       # add recommendations
+                return [SlotSet('further_test', further_test_input)]              
         elif question == 'q_age':
             age_input = int(tracker.latest_message['text'])
             buttons_gender = [
@@ -181,105 +233,82 @@ class PTSDHelperAction(Action):
             dispatcher.utter_message(
                 text="Have you been a refugee and asylum seekers?", buttons=buttons)
             return [SlotSet('question', 'q_refugees'), SlotSet('victim_violence', victim_violence_input)]
-
-        elif question == 'q_refugees':      # start 5-item measure
-            refugees_input = tracker.latest_message['text']
+        elif question == 'q_refugees':
+            refugees = tracker.latest_message['text']
+            self.recommend(dispatcher, age, aboriginal_people, disater, military, emergency,
+                               vehicle_accident, sexual_assault, terrorism, victim_crime, victim_violence, refugees)
+            buttons_feedback = [
+                {
+                    "title": "Very helpful",
+                    "payload": "Very helpful"
+                },
+                {
+                    "title": "Somewhat helpful",
+                    "payload": "Somewhat helpful"
+                },
+                {
+                    "title": "Not helpful",
+                    "payload": "Not helpful"
+                },
+            ]
+            dispatcher.utter_message(text="Was this recommendation helpful to you?", buttons=buttons_feedback)
+            return[SlotSet('question', 'q_feedback')]
+        elif question == 'q_feedback':
+            feedback_input = tracker.latest_message['text']
             dispatcher.utter_message(
-                text="Had nightmares about the event(s) or thought about the event(s) when you did not want to?", buttons=buttons)
-            return [SlotSet('question', 'q_test_1'), SlotSet('refugees', refugees_input)]
-        elif question == 'q_test_1':
-            dispatcher.utter_message(
-                text="Tried hard not to think about the event(s) or went out of your way to avod situations that reminded you of the event(s)?", buttons=buttons)
-            if latest_message == 'affirm':
-                scores = scores + 1.0
-            return [SlotSet('question', 'q_test_2'), SlotSet('scores', scores)]
-        elif question == 'q_test_2':
-            dispatcher.utter_message(
-                text="Been constantly on guard, watchful or startled?", buttons=buttons)
-            if latest_message == 'affirm':
-                scores = scores + 1.0
-            return[SlotSet('question', 'q_test_3'), SlotSet('scores', scores)]
-        elif question == 'q_test_3':
-            dispatcher.utter_message(
-                text="Felt numb or detached from people, activities or your surroundings?", buttons=buttons)
-            if latest_message == 'affirm':
-                scores = scores + 1.0
-            return [SlotSet('question', 'q_test_4'), SlotSet('scores', scores)]
-        elif question == 'q_test_4':
-            dispatcher.utter_message(
-                text="Guilty or unable to stop blaming yourself or others for the event(s) or any problems the enent(s) may have caused?", buttons=buttons)
-            if latest_message == 'affirm':
-                scores = scores + 1.0
-            return [SlotSet('question', 'q_test_5'), SlotSet('scores', scores)]
-        elif question == 'q_test_5':
-            if latest_message == 'affirm':
-                scores = scores + 1.0
-            dispatcher.utter_message(text="Thanks for your answers.")
-            print(scores)
-            dispatcher.utter_message(
-                text="Your score is " + str(scores) + "/5.0.")
-            if scores < 3.0:
-                dispatcher.utter_message(
-                    text="It seems that you're fine right now, although sometimes you may have bad mood.")
-                dispatcher.utter_message(
-                    text="There are some recommendations for you to help overcome some bad emotions.")  # add recommendaitons
-                dispatcher.utter_message(text="GIVE RECOMMENDATIONS")
-            elif scores >= 3.0:
-                dispatcher.utter_message(
-                    text="It seems that you may have PTSD.")
-                dispatcher.utter_message(
-                    text="Before recommendations, do you want to tell us your email? So that we can track you and provide you with better treatment.", buttons=buttons)
-                return [SlotSet('question', 'q_email')]
+                text="At last, would you like to be contacted by Phoenix Australia or referred to a professional in the field?", buttons=buttons)
+            return[SlotSet('question', 'q_email'), SlotSet('feedback', feedback_input)]
         elif question == 'q_email':
             if latest_message == 'affirm':
                 dispatcher.utter_message(text="Please input your email.")
-                return [SlotSet('question', 'q_PTSD_recommendation')]
+                return[SlotSet('question', 'ending')]
             elif latest_message == 'deny':
-                self.recommend(dispatcher, age, aboriginal_people, disater, military, emergency,
-                               vehicle_accident, sexual_assault, terrorism, victim_crime, victim_violence, refugees)
-        elif question == 'q_PTSD_recommendation':
+                dispatcher.utter_message(
+                    text="Thanks for your test.")
+        elif question == 'ending':
             email = tracker.latest_message['text']
-            self.recommend(dispatcher, age, aboriginal_people, disater, military, emergency,
-                           vehicle_accident, sexual_assault, terrorism, victim_crime, victim_violence, refugees)
+            dispatcher.utter_message(text="Thanks for your test.")
+            return[SlotSet('email', email)]
 
     def recommend(self, dispatcher, age, aboriginal_people, disater, military, emergency, vehicle_accident, sexual_assault, terrorism, victim_crime, victim_violence, refugees):
         dispatcher.utter_message(
             text="There are some recommendations and resources for you to treat PTSD.")
         dispatcher.utter_message(
-            text="PTSD guideline - Treatment recommendations: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-6.-Treatment-recommendations.pdf")
+            text="[PTSD guideline - Treatment recommendations](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-6.-Treatment-recommendations.pdf)")
         if age <= 17:
             dispatcher.utter_message(
-                text="PTSD guideline - Children and adolescents: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-3.-Children-and-adolescents.pdf")
+                text="[PTSD guideline - Children and adolescents](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-3.-Children-and-adolescents.pdf)")
         elif age >= 65:
             dispatcher.utter_message(
-                text="PTSD guideline - Older people: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-6.-PTSD-in-older-people-1.pdf")
+                text="[PTSD guideline - Older people](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-6.-PTSD-in-older-people-1.pdf)")
         if aboriginal_people == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Aboriginal and Torres Strait Islander Peoples: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-1-Aboriginal-and-Torres-Strait-Islander-Peoples-1.pdf")
+                text="[PTSD guideline - Aboriginal and Torres Strait Islander Peoples](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-1-Aboriginal-and-Torres-Strait-Islander-Peoples-1.pdf)")
         if disater == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Disasters: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-2.-Disasters-1.pdf")
+                text="[PTSD guideline - Disasters](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-2.-Disasters-1.pdf)")
         if emergency == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Emergency services personnel: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-3.-Emergency-services-personnel-1.pdf")
+                text="[PTSD guideline - Emergency services personnel](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-3.-Emergency-services-personnel-1.pdf)")
         if military == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Military and ex-military personnel: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-4.-Military-and-ex-military-personnel-1.pdf")
+                text="[PTSD guideline - Military and ex-military personnel](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-4.-Military-and-ex-military-personnel-1.pdf)")
         if vehicle_accident == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Motor vehicle accident: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-5.-Motor-vehicle-accident-and-other-traumatic-injury-survivors-1.pdf")
+                text="[PTSD guideline - Motor vehicle accident](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-5.-Motor-vehicle-accident-and-other-traumatic-injury-survivors-1.pdf)")
         if sexual_assault == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Sexual assault: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-8.-Sexual-assault-1.pdf")
+                text="[PTSD guideline - Sexual assault](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-8.-Sexual-assault-1.pdf)")
         if terrorism == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Terrorism: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-9.-Terrorism-1.pdf")
+                text="[PTSD guideline - Terrorism](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-9.-Terrorism-1.pdf)")
         if victim_crime == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Victims of crime: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-10.-Victims-of-crime-1.pdf")
+                text="[PTSD guideline - Victims of crime](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-10.-Victims-of-crime-1.pdf)")
         if victim_violence == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Victims of Intimate Partner Violence: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-11.-Victims-of-intimate-partner-violence-1.pdf")
+                text="[PTSD guideline - Victims of Intimate Partner Violence](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-11.-Victims-of-intimate-partner-violence-1.pdf)")
         if refugees == 'yes':
             dispatcher.utter_message(
-                text="PTSD guideline - Refugees and asylum seekers: https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-7.-Refugees-and-asylum-seekers-1.pdf")
+                text="[PTSD guideline - Refugees and asylum seekers](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-9-7.-Refugees-and-asylum-seekers-1.pdf)")
+
