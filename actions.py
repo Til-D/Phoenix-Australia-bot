@@ -58,12 +58,12 @@ class PTSDHelperAction(Action):
                 dispatcher.utter_message(
                     text="PTSD is a chronic psychiatric disorder accompanying by stressful and anxiety feelings, which are caused by non-forgotten bad memories.")
                 dispatcher.utter_message(
-                    text="So do you think you may be experiencing PTSD?", buttons=buttons)
+                    text="Do you think you may be experiencing PTSD?", buttons=buttons)
                 return [SlotSet('question', 'q_experience_ptsd')]
         elif question == 'q_experience_ptsd':
             if latest_message == 'affirm':
                 dispatcher.utter_message(
-                    text="I'm going to ask you only a few questions, wihch helps you to know yourself better.", buttons=buttons)  # ask if user wants a test
+                    text="Let me ask you a few questions, wihch will help me and you to get to know yourself a bit better.", buttons=buttons)  # ask if user wants a test
                 return [SlotSet('question', 'q_yourself_ptsd')]
             elif latest_message == 'deny':
                 dispatcher.utter_message(
@@ -74,7 +74,7 @@ class PTSDHelperAction(Action):
                 dispatcher.utter_message(
                     text="They may be having a bad time. You can help them through this hard time.")
                 dispatcher.utter_message(
-                    text="There are some resources about PTSD details and some treatments that can help.")
+                    text="Here are some resources about PTSD details and some treatments that can help.")
                 dispatcher.utter_message(
                     text="FAMILY RESOURCES RECOMMENDATIONS")     # add recommendations
                 return []
@@ -85,7 +85,7 @@ class PTSDHelperAction(Action):
         elif question == 'q_practitioner_ptsd':
             if latest_message == 'affirm':
                 dispatcher.utter_message(
-                    text="There are some resources about PTSD and some treaments may help PTSD patients recover.")
+                    text="Here are some resources about PTSD and some treaments may help PTSD patients recover.")
                 dispatcher.utter_message(       # add recommendations
                     text="[1. PTSD guideline - Children and adolescents](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-3.-Children-and-adolescents.pdf)" +
                     "\n[2. PTSD guideline - Interventions](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-4.-Interventions.pdf)" +
@@ -99,7 +99,7 @@ class PTSDHelperAction(Action):
         elif question == 'q_yourself_ptsd':
             if latest_message == 'deny':
                 dispatcher.utter_message(
-                    text="There are some recommendations and resources for you to treat PTSD.")
+                    text="Here are some recommendations and resources for you to treat PTSD.")
                 dispatcher.utter_message(       # give recommendation
                     text="[1. PTSD guideline - Children and adolescents](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-3.-Children-and-adolescents.pdf)" +
                     "\n[2. PTSD guideline - Treatment recommendations](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-6.-Treatment-recommendations.pdf)" +
@@ -108,31 +108,31 @@ class PTSDHelperAction(Action):
             elif latest_message == 'affirm': 
                 dispatcher.utter_message(
                     text="Excellent! This is an anonymous test and the results will only be shown to you. So you can trust me totally. ")
-                dispatcher.utter_message(text="In the past month, ...")
+                dispatcher.utter_message(text="In the past month, have you ...")
                 dispatcher.utter_message(
-                    text="Had nightmares about the event(s) or thought about the event(s) when you did not want to?", buttons=buttons)      # start five-item measurement
+                    text="had nightmares about the event(s) or thought about the event(s) when you did not want to?", buttons=buttons)      # start five-item measurement
                 return [SlotSet('question', 'q_test_1')]
         elif question == 'q_test_1':
             dispatcher.utter_message(
-                text="Tried hard not to think about the event(s) or went out of your way to avod situations that reminded you of the event(s)?", buttons=buttons)
+                text="tried hard not to think about the event(s) or went out of your way to avod situations that reminded you of the event(s)?", buttons=buttons)
             if latest_message == 'affirm':
                 scores = scores + 1.0
             return [SlotSet('question', 'q_test_2'), SlotSet('scores', scores)]
         elif question == 'q_test_2':
             dispatcher.utter_message(
-                text="Been constantly on guard, watchful or startled?", buttons=buttons)
+                text="been constantly on guard, watchful or startled?", buttons=buttons)
             if latest_message == 'affirm':
                 scores = scores + 1.0
             return[SlotSet('question', 'q_test_3'), SlotSet('scores', scores)]
         elif question == 'q_test_3':
             dispatcher.utter_message(
-                text="Felt numb or detached from people, activities or your surroundings?", buttons=buttons)
+                text="felt numb or detached from people, activities or your surroundings?", buttons=buttons)
             if latest_message == 'affirm':
                 scores = scores + 1.0
             return [SlotSet('question', 'q_test_4'), SlotSet('scores', scores)]
         elif question == 'q_test_4':
             dispatcher.utter_message(
-                text="Guilty or unable to stop blaming yourself or others for the event(s) or any problems the enent(s) may have caused?", buttons=buttons)
+                text="felt guilty or unable to stop blaming yourself or others for the event(s) or any problems the enent(s) may have caused?", buttons=buttons)
             if latest_message == 'affirm':
                 scores = scores + 1.0
             return [SlotSet('question', 'q_test_5'), SlotSet('scores', scores)]
@@ -143,15 +143,15 @@ class PTSDHelperAction(Action):
                 text="Your score is " + str(scores) + "/5.0.")
             if scores < 3.0:
                     dispatcher.utter_message(
-                        text="It seems that you're fine right now, although sometimes you may have bad mood.")
+                        text="It seems that you're fine right now. We all are sometimes in a bad mood.")
                     dispatcher.utter_message(
-                        text="There are some recommendations for you to help overcome some bad emotions.")  # add recommendaitons
+                        text="Here are some recommendations for you to help overcome bad emotions:")  # add recommendaitons
                     dispatcher.utter_message(text="GIVE RECOMMENDATIONS")
             elif scores >= 3.0:
                 dispatcher.utter_message(
-                    text="It seems that you may have PTSD.")
+                    text="It seems that you may show some symptoms of PTSD.")
                 dispatcher.utter_message(
-                    text="Would you like to answer more questions that will help us to give you a moreaccurate recommendation? It may take you 3 minutes.", buttons=buttons)
+                    text="To help you better, I will need to ask you a few more questions that will help me give you a moreaccurate recommendation. It may take about 3 minutes. Is that ok?", buttons=buttons)
                 return [SlotSet('question', 'q_further_test')]
         elif question == 'q_further_test':
             further_test_input = tracker.latest_message['text'] 
@@ -160,7 +160,7 @@ class PTSDHelperAction(Action):
                     text="What's your age?")
                 return [SlotSet('question', 'q_age'), SlotSet('further_test', further_test_input)]
             elif latest_message == 'deny':
-                dispatcher.utter_message(text="There are some recommendations for you.")
+                dispatcher.utter_message(text="Here are some recommendations for you:")
                 dispatcher.utter_message(text="GIVE RECOMMENDATIONS")       # add recommendations
                 return [SlotSet('further_test', further_test_input)]              
         elif question == 'q_age':
@@ -180,17 +180,17 @@ class PTSDHelperAction(Action):
                 },
             ]
             dispatcher.utter_message(
-                text="What's your gender", buttons=buttons_gender)
+                text="What's your gender?", buttons=buttons_gender)
             return [SlotSet('question', 'q_gender'), SlotSet('age', age_input)]
         elif question == 'q_gender':
             gender_input = tracker.latest_message['text']
             dispatcher.utter_message(
-                text="Are you Aboriginal and Torres Strait Islander people?", buttons=buttons)
+                text="Are you an Aboriginal and Torres Strait Islander?", buttons=buttons)
             return [SlotSet('question', 'q_Aboriginal'), SlotSet('gender', gender_input)]
         elif question == 'q_Aboriginal':
             aboriginal_people_input = tracker.latest_message['text']
             dispatcher.utter_message(
-                text="Are you experiencing a disater?", buttons=buttons)    # start a test for special population
+                text="Are you currently experiencing a disater?", buttons=buttons)    # start a test for special population
             return [SlotSet('question', 'q_disater'), SlotSet('aboriginal_people', aboriginal_people_input)]
         elif question == 'q_disater':
             disater_input = tracker.latest_message['text']
@@ -256,7 +256,7 @@ class PTSDHelperAction(Action):
         elif question == 'q_feedback':
             feedback_input = tracker.latest_message['text']
             dispatcher.utter_message(
-                text="At last, would you like to be contacted by Phoenix Australia or referred to a professional in the field?", buttons=buttons)
+                text="At last, would you like to be contacted by our team at Phoenix Australia or referred to a professional in the field?", buttons=buttons)
             return[SlotSet('question', 'q_email'), SlotSet('feedback', feedback_input)]
         elif question == 'q_email':
             if latest_message == 'affirm':
@@ -272,7 +272,7 @@ class PTSDHelperAction(Action):
 
     def recommend(self, dispatcher, age, aboriginal_people, disater, military, emergency, vehicle_accident, sexual_assault, terrorism, victim_crime, victim_violence, refugees):
         dispatcher.utter_message(
-            text="There are some recommendations and resources for you to treat PTSD.")
+            text="Here are some recommendations and resources for you to treat PTSD.")
         dispatcher.utter_message(
             text="[PTSD guideline - Treatment recommendations](https://www.phoenixaustralia.org/wp-content/uploads/2020/07/Chapter-6.-Treatment-recommendations.pdf)")
         if age <= 17:
